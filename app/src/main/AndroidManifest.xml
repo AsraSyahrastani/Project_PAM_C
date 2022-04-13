@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_Kelas_C">
         <activity
+            android:name=".Edit_Teman2"
+            android:exported="false" />
+        <activity
             android:name=".TemanBaru"
             android:exported="false" />
         <activity
