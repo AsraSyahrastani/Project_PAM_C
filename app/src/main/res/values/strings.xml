@@ -8,4 +8,7 @@
     <string name="tnotelp">No Telepon</string>
     <string name="tcreatedata">Create Data</string>
     <string name="tview">View</string>
+    <string name="TAG_ID">id</string>
+    <string name="TAG_NAMA">nama</string>
+    <string name="TAG_TELPON">telpon</string>
 </resources>
