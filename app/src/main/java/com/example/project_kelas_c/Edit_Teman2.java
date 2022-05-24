@@ -2,63 +2,115 @@ package com.example.project_kelas_c;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.project_kelas_c.database.DBcontroller;
+import com.example.project_kelas_c.MainActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.Map;
 
 public class Edit_Teman2 extends AppCompatActivity {
+    TextView idText;
+    EditText edNama, edTelpon;
+    Button editBtn;
+    String id, nm, tlp, namaEd, telponEd;
+    int sukses;
 
-    TextInputEditText Nama, Telepon;
-    Button Save;
-    String nma, tlp, id;
-    DBcontroller controller = new DBcontroller(this);
+    private static String url_update = "http://10.0.2.2/PAM/updatetm.php";
+    private static final String TAG = Edit_Teman2.class.getSimpleName();
+    private static final String TAG_SUCCESS = "success";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_teman2);
 
-        Nama = findViewById(R.id.edNama);
-        Telepon = findViewById(R.id.edTelp);
-        Save = findViewById(R.id.simpanBtn);
+        idText = findViewById(R.id.textId);
+        edNama = findViewById(R.id.editNm);
+        edTelpon = findViewById(R.id.editTlp);
+        editBtn = findViewById(R.id.simpanBtn);
 
-        id = getIntent().getStringExtra("id");
-        nma = getIntent().getStringExtra("nama");
-        tlp = getIntent().getStringExtra("telpon");
+        Bundle bundle = getIntent().getExtras();
+        id = bundle.getString("kunci1");
+        nm = bundle.getString("kunci2");
+        tlp = bundle.getString("kunci3");
 
-        setTitle("Edit Data");
-        Nama.setText(nma);
-        Telepon.setText(tlp);
+        idText.setText("Id: "+ id);
+        edNama.setText(nm);
+        edTelpon.setText(tlp);
 
-        Save.setOnClickListener(new View.OnClickListener() {
+        editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Nama.getText().toString().isEmpty() || Telepon.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Mohon isi data terlebih dahulu !!!", Toast.LENGTH_SHORT).show();
-                } else {
-                    nma = Nama.getText().toString();
-                    tlp = Telepon.getText().toString();
-                    HashMap<String, String> values = new HashMap<>();
-                    values.put("id", id);
-                    values.put("nama", nma);
-                    values.put("telpon", tlp);
-                    controller.UpdateData(values);
-                    callHome();
-                }
+                EditData();
             }
         });
     }
 
-    public void callHome() {
-        Intent i = new Intent(Edit_Teman2.this, MainActivity.class);
-        startActivity(i);
+    public void EditData(){
+        namaEd = edNama.getText().toString();
+        telponEd = edTelpon.getText().toString();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringReq = new StringRequest(Request.Method.POST, url_update, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Respon: " + response.toString());
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    sukses = jsonObject.getInt(TAG_SUCCESS);
+                    if (sukses == 1) {
+                        Toast.makeText(Edit_Teman2.this, "SUkses mengedit data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Edit_Teman2.this, "gagal", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Erros : " +error.getMessage());
+                Toast.makeText(Edit_Teman2.this, "Gagal Edit Data",Toast.LENGTH_SHORT).show();
+            }
+        })
+        {
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<>();
+                params.put("id",id);
+                params.put("nama",namaEd);
+                params.put("telpon",telponEd);
+
+                return params;
+            }
+        };
+        requestQueue.add(stringReq);
+        CallHomeActivity();
+    }
+
+    public void CallHomeActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
         finish();
     }
 }

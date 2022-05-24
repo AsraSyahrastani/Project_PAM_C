@@ -5,15 +5,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Project_Kelas_C">
-        <activity
-            android:name=".TambahTeman"
-            android:exported="false" />
+        android:theme="@style/Theme.Project_Kelas_C"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".Edit_Teman2"
             android:exported="false" />

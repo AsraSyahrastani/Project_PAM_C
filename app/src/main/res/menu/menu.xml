@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/mnEdit"
-        android:title="@string/teditdata"/>
+        android:id="@+id/edit"
+        android:title="edit" />
     <item
-        android:id="@+id/mnHapus"
-        android:title="@string/tdeletedata"/>
+        android:id="@+id/hapus"
+        android:title="Hapus" />
+
 </menu>
